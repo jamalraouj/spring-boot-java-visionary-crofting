@@ -7,7 +7,11 @@ import com.youcode.visionarycrofting.entity.Client;
 import com.youcode.visionarycrofting.entity.Command;
 import com.youcode.visionarycrofting.entity.Product;
 import com.youcode.visionarycrofting.repository.ClientRepository;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Transient;
@@ -84,7 +88,7 @@ public class ClientService {
 
     public Client updateClient(Client client)
     {
-        Message message = new Message (  );
+        Message message = new Message ();
         Client clientUpdated=clientRepository.findById(client.getId()).
                 orElseThrow(()->new IllegalStateException("this client number:"+client.getId()+" does not exist"));
 
@@ -113,7 +117,10 @@ public class ClientService {
     }
 
     @Transactional
-    public Client passerCommande(Long idClient, Collection<PasserCommande> productList) {
+    public Client passerCommande(Collection<PasserCommande> productList) {
+
+        Long idClient = Long.parseLong("1");
+
         Optional<Client> client = clientRepository.findById(idClient);
         Command command = commandService.createCommand(productList, client.get ());
 

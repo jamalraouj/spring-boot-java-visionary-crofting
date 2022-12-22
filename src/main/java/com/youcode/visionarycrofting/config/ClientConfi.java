@@ -2,6 +2,7 @@ package com.youcode.visionarycrofting.config;
 
 import com.youcode.visionarycrofting.entity.Client;
 import com.youcode.visionarycrofting.entity.Product;
+import com.youcode.visionarycrofting.entity.Role;
 import com.youcode.visionarycrofting.repository.ClientRepository;
 import com.youcode.visionarycrofting.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -14,9 +15,15 @@ public class ClientConfi {
     @Bean
     CommandLineRunner commandLineRunner1 (ClientRepository clientRepository){
         return args -> {
-            Client client1=new Client("jamal","jamal@gmail.com","PASS132","0634483769","YOUSOUFIA");
+            Client client1=new Client("PASS132","0634483769","YOUSOUFIA");
+            client1.setRole(Role.CLIENT);
+            client1.setEmail("client@gmail.com");
+            client1.setPassword("1234");
 
-            Client client=new Client("Mohamed","MOhamed@gmail.com","PASS132","0634483769","YOUSOUFIA");
+            Client client=new Client("PASS132","0634483769","YOUSOUFIA");
+            client.setEmail("client2@gmail.com");
+            client.setPassword("1234");
+            client.setRole(Role.CLIENT);
            clientRepository.saveAll(List.of(client1,client));
         };
     }

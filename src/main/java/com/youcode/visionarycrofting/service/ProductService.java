@@ -25,20 +25,63 @@ public class ProductService {
     }
 
     public Product addProduct ( Product product ) {
+//        Message message = new Message (  );
+        boolean isValide = true;
         Message message = new Message (  );
-        Optional<Product> productOptional = productRepository.findProductByProductReference ( product.getProductReference () );
-        if (productOptional.isPresent ()){
-            message.setState ( "Info" );
-            message.setMessage ( "Product is aready with this reference, please change a reference or update this product" );
+
+        if (product.getProductReference () == null) {
+            isValide = !isValide;
+            message.setState ( "Error" );
+            message.setMessage ( "Reference does not null value" );
             product.setMessage ( message );
-            return product;
-        } else {
-            message.setState ( "Success" );
-            message.setMessage ( "Product has ben created" );
+        } else if (product.getQuantity () == null){
+            isValide = !isValide;
+            message.setState ( "Error" );
+            message.setMessage ( "Quantity does not null value" );
             product.setMessage ( message );
-            productRepository.save ( product );
-            return product;
+        }else if (product.getQuantity () < 1){
+            isValide = !isValide;
+            message.setState ( "Error" );
+            message.setMessage ( "Quantity does not negative or equal zero value" );
+            product.setMessage ( message );
+        } else if (product.getMinQuantity () < 0){
+            isValide = !isValide;
+            message.setState ( "Error" );
+            message.setMessage ( "Quantity Min does not negative value" );
+            product.setMessage ( message );
+        } else if (product.getCategory () == null){
+            isValide = !isValide;
+            message.setState ( "Error" );
+            message.setMessage ( "Category does not null value" );
+            product.setMessage ( message );
+        } else if (product.getName () == null) {
+            isValide = !isValide;
+            message.setState ( "Error" );
+            message.setMessage ( "Name does not negative value" );
+            product.setMessage ( message );
         }
+
+        if (isValide) {
+            message.setState("Success");
+            message.setMessage("your product has been successfully created");
+            product.setMessage(message);
+//            return productService.addProduct(product);
+
+            Optional<Product> productOptional = productRepository.findProductByProductReference(product.getProductReference());
+            if (productOptional.isPresent()) {
+                message.setState("Info");
+                message.setMessage("Product is already with this reference, please change a reference or update this product");
+                product.setMessage(message);
+                return product;
+            } else {
+                message.setState("Success");
+                message.setMessage("Product has ben created");
+                product.setMessage(message);
+                productRepository.save(product);
+
+            }
+        }
+        return product;
 
     }
 

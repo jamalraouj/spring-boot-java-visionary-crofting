@@ -6,6 +6,7 @@ import com.youcode.visionarycrofting.classes.PasserCommande;
 import com.youcode.visionarycrofting.entity.Client;
 import com.youcode.visionarycrofting.entity.Command;
 import com.youcode.visionarycrofting.service.ClientService;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "visionarycrofting/Client")
+@RequestMapping(path = {"visionarycrofting/Client" ,"visionarycrofting/client" })
 public class ClientController {
 private final ClientService clientService;
 
@@ -45,7 +46,6 @@ private final ClientService clientService;
         return clientService.deleteClient(clientId);
     }
 
-
     @PutMapping(path = "/updateClient")
     public Client updateClient(@RequestBody Client client)
 
@@ -54,11 +54,11 @@ private final ClientService clientService;
     }
 
 
-    @PostMapping("/passer_commande/{idClient}")
+    @PostMapping("/passer_commande")
     @ResponseBody
-    public Client passerCommande(@PathVariable Long idClient,@RequestBody Collection<PasserCommande> productList)
+    public Client passerCommande(  @RequestBody Collection<PasserCommande> productList)
     {
-        return clientService.passerCommande(idClient, productList);
+        return clientService.passerCommande(productList);
     }
 
 }
