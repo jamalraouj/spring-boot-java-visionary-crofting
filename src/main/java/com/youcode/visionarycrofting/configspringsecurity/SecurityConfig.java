@@ -3,6 +3,8 @@ package com.youcode.visionarycrofting.configspringsecurity;
 
 import com.youcode.visionarycrofting.dao.UserDao;
 import com.youcode.visionarycrofting.entity.Role;
+import com.youcode.visionarycrofting.entity.UserEntity;
+import com.youcode.visionarycrofting.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,7 +32,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAthFilter jwtAthFilter;
-    private final UserDao userDao;
+    private final UserService userService;
+
     @Autowired
     private UserDetailsService userDetailsService;
     @Bean
@@ -43,7 +47,9 @@ public class SecurityConfig {
                 .antMatchers("/**/auth/**").permitAll()
                 .antMatchers("/**/product/**").hasRole(Role.USER.toString())
                 .antMatchers("/**/client/passer_commande").hasRole(Role.CLIENT.toString())
-
+                .antMatchers("/**/client/me" ,"/**/client/profile" ,"/**/client/my_profile").hasRole(Role.CLIENT.toString())
+                .antMatchers("/**/client/addClient").permitAll()
+                .antMatchers("/**/client/Clients","/**/client/","/**/client/all","/**/client/clients" , "/**/client/{client_id}").hasRole(Role.ADMIN.toString())
                 .and()
                 .userDetailsService(userDetailsService)
                 .sessionManagement()
@@ -65,7 +71,10 @@ public class SecurityConfig {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-                return userDao.findUserByEmail(email);
+               return userService.loadUserByUsername(email);
+
+
+
             }
         };
     }

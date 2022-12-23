@@ -39,6 +39,9 @@ public class ClientService {
     public Optional<Client> getOneById(Long id){
         return clientRepository.findById(id);
     }
+    public Optional<Client> getOneByEmail(String email){
+        return clientRepository.findClientByEmail(email);
+    }
 
     public Client addClient(Client client)
     {
@@ -117,14 +120,13 @@ public class ClientService {
     }
 
     @Transactional
-    public Client passerCommande(Collection<PasserCommande> productList) {
+    public Client passerCommande(Collection<PasserCommande> productList , Client client) {
 
-        Long idClient = Long.parseLong("1");
 
-        Optional<Client> client = clientRepository.findById(idClient);
-        Command command = commandService.createCommand(productList, client.get ());
+//        Optional<Client> client = clientRepository.findById(idClient);
+        Command command = commandService.createCommand(productList, client);
 
-        return addCommand(command, idClient);
+        return addCommand(command, client.getId());
     }
 
     public List< Command> getCommandByClient ( Long id ) {

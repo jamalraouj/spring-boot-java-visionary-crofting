@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtils {
-    private String jwtSigningKey = "MAITITe";
+    private String jwtSigningKey = "secret";
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
@@ -40,19 +40,16 @@ public class JwtUtils {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ TimeUnit.HOURS.toMillis(24)))
                 .signWith(SignatureAlgorithm.HS256,jwtSigningKey).compact();
-
     }
-
     public String generateToken(UserDetails userDetails , Map<String , Object> claims) {
         return createToken(claims,userDetails);
     }
-
     public  <T> T extractClaim(String token, Function<Claims , T> claimsResolver) {
         final Claims claims =extractAllClaim(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaim(String token) {
+        private Claims extractAllClaim(String token) {
         return Jwts.parser().setSigningKey(jwtSigningKey).parseClaimsJws(token).getBody();
     }
 
